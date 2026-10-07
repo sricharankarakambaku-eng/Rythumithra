@@ -12,106 +12,118 @@
   <header class="topbar">
     <div>
       <div class="brand">🌱 RythuMitra</div>
-      <div class="tagline">Your Farm. Your Data. Your Better Decision.</div>
+      <div class="tagline" data-i18n="tagline">Your Farm. Your Data. Your Better Decision.</div>
     </div>
+    <button class="lang" onclick="toggleLanguage()" id="langBtn">తెలుగు</button>
   </header>
 
   <main class="container">
     <section id="dashboard" class="screen active">
       <div class="hero">
-        <h1>Good day, Farmer 👋</h1>
-        <p>Manage your farm and understand your costs and estimated profit.</p>
+        <h1 data-i18n="greeting">Good day, Farmer 👋</h1>
+        <p data-i18n="dashboardIntro">Manage your farm, daily costs and profit separately.</p>
       </div>
       <div class="grid">
-        <div class="card stat"><span>🌾 Crop</span><strong id="dashCrop">Not added</strong></div>
-        <div class="card stat"><span>📐 Area</span><strong id="dashArea">0 acres</strong></div>
-        <div class="card stat"><span>💰 Expenses</span><strong id="dashExpenses">₹0</strong></div>
-        <div class="card stat"><span>📈 Est. Profit</span><strong id="dashProfit">₹0</strong></div>
+        <div class="card stat"><span data-i18n="crop">🌾 Crop</span><strong id="dashCrop">Not added</strong></div>
+        <div class="card stat"><span data-i18n="area">📐 Area</span><strong id="dashArea">0 acres</strong></div>
+        <div class="card stat expense-stat"><span data-i18n="totalExpenses">💰 Total Expenses</span><strong id="dashExpenses">₹0</strong></div>
+        <div class="card stat profit-stat"><span data-i18n="totalProfit">📈 Total Profit</span><strong id="dashProfit">₹0</strong></div>
       </div>
       <div class="card">
-        <h2>Quick actions</h2>
+        <h2 data-i18n="quickActions">Quick actions</h2>
         <div class="actions">
-          <button onclick="showScreen('farm')">🌾 Add / Edit Farm</button>
-          <button onclick="showScreen('expenses')">➕ Add Expense</button>
-          <button onclick="showScreen('profit')">📊 Calculate Profit</button>
+          <button onclick="showScreen('farm')">🌾 <span data-i18n="farmBtn">Add / Edit Farm</span></button>
+          <button onclick="showScreen('expenses')">➕ <span data-i18n="addExpenseBtn">Add Daily Expense</span></button>
+          <button onclick="showScreen('profit')">📊 <span data-i18n="recordProfitBtn">Record Profit</span></button>
         </div>
       </div>
     </section>
 
     <section id="farm" class="screen">
       <div class="card">
-        <h2>🌾 My Farm</h2>
-        <label>Farmer name<input id="farmerName" placeholder="Your name"></label>
-        <label>Village / location<input id="location" placeholder="Village, District"></label>
-        <label>Crop<input id="crop" placeholder="e.g. Paddy"></label>
-        <label>Land area (acres)<input id="area" type="number" min="0" step="0.01" placeholder="e.g. 3"></label>
-        <label>Sowing date<input id="sowingDate" type="date"></label>
-        <button class="primary" onclick="saveFarm()">Save Farm</button>
+        <h2 data-i18n="myFarm">🌾 My Farm</h2>
+        <label data-i18n="farmerName">Farmer name<input id="farmerName" placeholder="Your name"></label>
+        <label data-i18n="location">Village / location<input id="location" placeholder="Village, District"></label>
+        <label data-i18n="cropLabel">Crop<input id="crop" placeholder="e.g. Paddy"></label>
+        <label data-i18n="landArea">Land area (acres)<input id="area" type="number" min="0" step="0.01" placeholder="e.g. 3"></label>
+        <label data-i18n="sowingDate">Sowing date<input id="sowingDate" type="date"></label>
+        <button class="primary" onclick="saveFarm()" data-i18n="saveFarm">Save Farm</button>
         <p id="farmSaved" class="success"></p>
       </div>
     </section>
 
     <section id="expenses" class="screen">
       <div class="card">
-        <h2>💰 Expenses</h2>
-        <label>Category
+        <h2 data-i18n="dailyExpenses">💰 Daily Expenses</h2>
+        <p class="muted" data-i18n="expenseHint">Record each expense separately with its date. Your expense history stays separate from profit history.</p>
+        <label data-i18n="category">Category
           <select id="expenseCategory">
             <option>Seeds</option><option>Fertilizer</option><option>Labour</option>
-            <option>Irrigation</option><option>Machinery</option><option>Crop protection</option><option>Other</option>
+            <option>Irrigation</option><option>Machinery</option><option>Crop protection</option><option>Transport</option><option>Other</option>
           </select>
         </label>
-        <label>Amount (₹)<input id="expenseAmount" type="number" min="0" step="0.01" placeholder="0"></label>
-        <label>Date<input id="expenseDate" type="date"></label>
-        <label>Note<input id="expenseNote" placeholder="Optional"></label>
-        <button class="primary" onclick="addExpense()">Add Expense</button>
+        <label data-i18n="amount">Amount (₹)<input id="expenseAmount" type="number" min="0" step="0.01" placeholder="0"></label>
+        <label data-i18n="date">Date<input id="expenseDate" type="date"></label>
+        <label data-i18n="note">Note<input id="expenseNote" placeholder="Optional"></label>
+        <button class="primary" onclick="addExpense()" data-i18n="addExpense">Add Expense</button>
       </div>
       <div class="card">
-        <h2>Expense history</h2>
+        <div class="section-title"><h2 data-i18n="expenseHistory">Expense History</h2><strong id="expenseTotal">₹0</strong></div>
         <div id="expenseList"></div>
-        <div class="total">Total: <strong id="expenseTotal">₹0</strong></div>
       </div>
     </section>
 
     <section id="profit" class="screen">
       <div class="card">
-        <h2>📊 Profit Calculator</h2>
-        <label>Expected yield (quintals)<input id="yieldQ" type="number" min="0" step="0.01" placeholder="e.g. 60"></label>
-        <label>Expected selling price / quintal (₹)<input id="priceQ" type="number" min="0" step="0.01" placeholder="e.g. 2000"></label>
-        <button class="primary" onclick="calculateProfit()">Calculate</button>
+        <h2 data-i18n="profitCalculator">📊 Profit Calculator</h2>
+        <label data-i18n="profitDate">Profit date<input id="profitDate" type="date"></label>
+        <label data-i18n="yield">Expected / actual yield (quintals)<input id="yieldQ" type="number" min="0" step="0.01" placeholder="e.g. 60"></label>
+        <label data-i18n="price">Selling price / quintal (₹)<input id="priceQ" type="number" min="0" step="0.01" placeholder="e.g. 2000"></label>
+        <label data-i18n="profitExpensesInput">Expenses for this profit record (₹)<input id="profitExpenseAmount" type="number" min="0" step="0.01" placeholder="Enter expenses for this calculation"></label>
+        <p class="muted" data-i18n="profitExpenseHint">This amount is recorded only for this profit entry. It does not change your daily expense history.</p>
+        <button class="primary" onclick="recordProfit()" data-i18n="saveProfit">Calculate & Save Profit</button>
       </div>
       <div class="grid">
-        <div class="card result"><span>Expected Revenue</span><strong id="revenue">₹0</strong></div>
-        <div class="card result"><span>Total Expenses</span><strong id="profitExpenses">₹0</strong></div>
-        <div class="card result"><span>Estimated Profit</span><strong id="profitValue">₹0</strong></div>
+        <div class="card result"><span data-i18n="revenue">Expected Revenue</span><strong id="revenue">₹0</strong></div>
+        <div class="card result"><span data-i18n="recordExpenses">Record Expenses</span><strong id="profitExpenses">₹0</strong></div>
+        <div class="card result"><span data-i18n="profit">Profit</span><strong id="profitValue">₹0</strong></div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h2 data-i18n="profitHistory">Profit History</h2><strong id="profitTotal">₹0</strong></div>
+        <div id="profitList"></div>
       </div>
     </section>
 
     <section id="reminders" class="screen">
       <div class="card">
-        <h2>🔔 Reminders</h2>
-        <label>Reminder<input id="reminderText" placeholder="e.g. Irrigation"></label>
-        <label>Date<input id="reminderDate" type="date"></label>
-        <button class="primary" onclick="addReminder()">Add Reminder</button>
+        <h2 data-i18n="reminders">🔔 Reminders</h2>
+        <p class="muted" data-i18n="reminderHint">Set a date and time. Allow notifications when your phone asks.</p>
+        <label data-i18n="reminderTextLabel">Reminder<input id="reminderText" placeholder="e.g. Irrigation"></label>
+        <label data-i18n="reminderDateLabel">Date<input id="reminderDate" type="date"></label>
+        <label data-i18n="reminderTimeLabel">Alarm time<input id="reminderTime" type="time"></label>
+        <button class="primary" onclick="addReminder()" data-i18n="addReminder">Add Reminder & Alarm</button>
+        <button class="secondary" onclick="requestNotifications()" data-i18n="allowNotifications">Allow Notifications</button>
+        <p id="notificationStatus" class="muted"></p>
       </div>
       <div class="card"><div id="reminderList"></div></div>
     </section>
 
     <section id="profile" class="screen">
       <div class="card">
-        <h2>👤 Profile</h2>
-        <p>RythuMitra MVP</p>
-        <p class="muted">This first version stores data locally on this device. A secure cloud database will be added in the next stage.</p>
+        <h2 data-i18n="profile">👤 Profile</h2>
+        <p>RythuMitra</p>
+        <p class="muted" data-i18n="localStorageNote">Your current data is stored on this device. Cloud sync can be added in a later version.</p>
       </div>
     </section>
   </main>
 
   <nav class="nav">
-    <button onclick="showScreen('dashboard')">🏠<span>Home</span></button>
-    <button onclick="showScreen('farm')">🌾<span>Farm</span></button>
-    <button onclick="showScreen('expenses')">💰<span>Expenses</span></button>
-    <button onclick="showScreen('profit')">📊<span>Profit</span></button>
-    <button onclick="showScreen('reminders')">🔔<span>Reminders</span></button>
-    <button onclick="showScreen('profile')">👤<span>Profile</span></button>
+    <button onclick="showScreen('dashboard')">🏠<span data-i18n="home">Home</span></button>
+    <button onclick="showScreen('farm')">🌾<span data-i18n="farm">Farm</span></button>
+    <button onclick="showScreen('expenses')">💰<span data-i18n="expensesNav">Expenses</span></button>
+    <button onclick="showScreen('profit')">📊<span data-i18n="profitNav">Profit</span></button>
+    <button onclick="showScreen('reminders')">🔔<span data-i18n="remindersNav">Reminders</span></button>
+    <button onclick="showScreen('profile')">👤<span data-i18n="profileNav">Profile</span></button>
   </nav>
   <script src="app.js"></script>
 </body>

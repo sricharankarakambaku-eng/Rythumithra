@@ -1,79 +1,46 @@
-const KEY='rythumitra_v1';
-let data=JSON.parse(localStorage.getItem(KEY)||'null')||{farm:{},expenses:[],reminders:[]};
+const KEY='rythumitra_v2';
+const oldKey='rythumitra_v1';
+let data=JSON.parse(localStorage.getItem(KEY)||'null');
+if(!data){
+  const old=JSON.parse(localStorage.getItem(oldKey)||'null');
+  data=old||{farm:{},expenses:[],profits:[],reminders:[]};
+  data.profits=data.profits||[];
+  data.reminders=(data.reminders||[]).map(r=>({...r,time:r.time||'08:00'}));
+}
+let lang=localStorage.getItem('rythumitra_lang')||'en';
+let reminderTimer=null;
 
-function save(){localStorage.setItem(KEY,JSON.stringify(data));updateUI()}
+const T={
+ en:{tagline:'Your Farm. Your Data. Your Better Decision.',greeting:'Good day, Farmer 👋',dashboardIntro:'Manage your farm, daily costs and profit separately.',crop:'🌾 Crop',area:'📐 Area',totalExpenses:'💰 Total Expenses',totalProfit:'📈 Total Profit',quickActions:'Quick actions',farmBtn:'Add / Edit Farm',addExpenseBtn:'Add Daily Expense',recordProfitBtn:'Record Profit',myFarm:'🌾 My Farm',farmerName:'Farmer name',location:'Village / location',cropLabel:'Crop',landArea:'Land area (acres)',sowingDate:'Sowing date',saveFarm:'Save Farm',dailyExpenses:'💰 Daily Expenses',expenseHint:'Record each expense separately with its date. Your expense history stays separate from profit history.',category:'Category',amount:'Amount (₹)',date:'Date',note:'Note',addExpense:'Add Expense',expenseHistory:'Expense History',profitCalculator:'📊 Profit Calculator',profitDate:'Profit date',yield:'Expected / actual yield (quintals)',price:'Selling price / quintal (₹)',profitExpensesInput:'Expenses for this profit record (₹)',profitExpenseHint:'This amount is recorded only for this profit entry. It does not change your daily expense history.',saveProfit:'Calculate & Save Profit',revenue:'Expected Revenue',recordExpenses:'Record Expenses',profit:'Profit',profitHistory:'Profit History',reminders:'🔔 Reminders',reminderHint:'Set a date and time. Allow notifications when your phone asks.',reminderTextLabel:'Reminder',reminderDateLabel:'Date',reminderTimeLabel:'Alarm time',addReminder:'Add Reminder & Alarm',allowNotifications:'Allow Notifications',profile:'👤 Profile',localStorageNote:'Your current data is stored on this device. Cloud sync can be added in a later version.',home:'Home',farm:'Farm',expensesNav:'Expenses',profitNav:'Profit',remindersNav:'Reminders',profileNav:'Profile'},
+ te:{tagline:'మీ పొలం. మీ డేటా. మీ మంచి నిర్ణయం.',greeting:'రైతు గారికి శుభదినం 👋',dashboardIntro:'మీ పొలం, రోజువారీ ఖర్చులు మరియు లాభాలను వేరువేరుగా నిర్వహించండి.',crop:'🌾 పంట',area:'📐 విస్తీర్ణం',totalExpenses:'💰 మొత్తం ఖర్చులు',totalProfit:'📈 మొత్తం లాభం',quickActions:'త్వరిత చర్యలు',farmBtn:'పొలం జోడించండి / మార్చండి',addExpenseBtn:'రోజువారీ ఖర్చు జోడించండి',recordProfitBtn:'లాభాన్ని నమోదు చేయండి',myFarm:'🌾 నా పొలం',farmerName:'రైతు పేరు',location:'గ్రామం / ప్రాంతం',cropLabel:'పంట',landArea:'భూమి విస్తీర్ణం (ఎకరాలు)',sowingDate:'విత్తిన తేదీ',saveFarm:'పొలాన్ని సేవ్ చేయండి',dailyExpenses:'💰 రోజువారీ ఖర్చులు',expenseHint:'ప్రతి ఖర్చును తేదీతో విడిగా నమోదు చేయండి. ఖర్చుల చరిత్ర, లాభాల చరిత్ర వేరుగా ఉంటాయి.',category:'వర్గం',amount:'మొత్తం (₹)',date:'తేదీ',note:'గమనిక',addExpense:'ఖర్చు జోడించండి',expenseHistory:'ఖర్చుల చరిత్ర',profitCalculator:'📊 లాభం లెక్కింపు',profitDate:'లాభం తేదీ',yield:'అంచనా / వాస్తవ దిగుబడి (క్వింటాళ్లు)',price:'క్వింటాల్‌కు అమ్మక ధర (₹)',profitExpensesInput:'ఈ లాభం లెక్కకు ఖర్చు (₹)',profitExpenseHint:'ఈ మొత్తం ఈ లాభం నమోదుకే వర్తిస్తుంది. ఇది రోజువారీ ఖర్చుల చరిత్రను మార్చదు.',saveProfit:'లాభాన్ని లెక్కించి సేవ్ చేయండి',revenue:'అంచనా ఆదాయం',recordExpenses:'నమోదు చేసిన ఖర్చు',profit:'లాభం',profitHistory:'లాభాల చరిత్ర',reminders:'🔔 రిమైండర్లు',reminderHint:'తేదీ మరియు సమయం పెట్టండి. ఫోన్ అడిగినప్పుడు నోటిఫికేషన్లను అనుమతించండి.',reminderTextLabel:'రిమైండర్',reminderDateLabel:'తేదీ',reminderTimeLabel:'అలారం సమయం',addReminder:'రిమైండర్ & అలారం జోడించండి',allowNotifications:'నోటిఫికేషన్లు అనుమతించండి',profile:'👤 ప్రొఫైల్',localStorageNote:'ప్రస్తుతం మీ డేటా ఈ పరికరంలోనే నిల్వ ఉంటుంది. తరువాత క్లౌడ్ సింక్ జోడించవచ్చు.',home:'హోమ్',farm:'పొలం',expensesNav:'ఖర్చులు',profitNav:'లాభం',remindersNav:'రిమైండర్లు',profileNav:'ప్రొఫైల్'}
+};
+const catTe={Seeds:'విత్తనాలు',Fertilizer:'ఎరువులు',Labour:'కూలీలు',Irrigation:'నీటిపారుదల',Machinery:'యంత్రాలు','Crop protection':'పంట రక్షణ',Transport:'రవాణా',Other:'ఇతర'};
+
+function save(){localStorage.setItem(KEY,JSON.stringify(data));updateUI();scheduleReminders()}
 function money(n){return '₹'+Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:2})}
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function saveFarm(){
-  data.farm={
-    farmerName:document.getElementById('farmerName').value.trim(),
-    location:document.getElementById('location').value.trim(),
-    crop:document.getElementById('crop').value.trim(),
-    area:Number(document.getElementById('area').value||0),
-    sowingDate:document.getElementById('sowingDate').value
-  };
-  save();
-  document.getElementById('farmSaved').textContent='Farm saved successfully.';
-}
-function addExpense(){
-  const amount=Number(document.getElementById('expenseAmount').value||0);
-  if(amount<=0){alert('Please enter a valid amount.');return}
-  data.expenses.push({
-    id:Date.now(),
-    category:document.getElementById('expenseCategory').value,
-    amount,
-    date:document.getElementById('expenseDate').value||new Date().toISOString().slice(0,10),
-    note:document.getElementById('expenseNote').value.trim()
-  });
-  document.getElementById('expenseAmount').value='';
-  document.getElementById('expenseNote').value='';
-  save();
-}
-function addReminder(){
-  const text=document.getElementById('reminderText').value.trim();
-  const date=document.getElementById('reminderDate').value;
-  if(!text||!date){alert('Enter a reminder and date.');return}
-  data.reminders.push({id:Date.now(),text,date});
-  document.getElementById('reminderText').value='';
-  save();
-}
+function today(){return new Date().toISOString().slice(0,10)}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+function toggleLanguage(){lang=lang==='en'?'te':'en';localStorage.setItem('rythumithra_lang',lang);applyLanguage();updateUI()}
+function applyLanguage(){document.documentElement.lang=lang==='te'?'te':'en';document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(T[lang][k]){if(el.tagName==='LABEL'){const input=el.querySelector('input,select');el.childNodes[0].nodeValue=T[lang][k]+' ';}else el.textContent=T[lang][k]}});document.getElementById('langBtn').textContent=lang==='en'?'తెలుగు':'English';document.querySelectorAll('#expenseCategory option').forEach(o=>{o.textContent=lang==='te'?(catTe[o.value]||o.value):o.value})}
+function saveFarm(){data.farm={farmerName:document.getElementById('farmerName').value.trim(),location:document.getElementById('location').value.trim(),crop:document.getElementById('crop').value.trim(),area:Number(document.getElementById('area').value||0),sowingDate:document.getElementById('sowingDate').value};save();document.getElementById('farmSaved').textContent=lang==='te'?'పొలం విజయవంతంగా సేవ్ అయింది.':'Farm saved successfully.'}
+function addExpense(){const amount=Number(document.getElementById('expenseAmount').value||0);if(amount<=0){alert(lang==='te'?'దయచేసి సరైన మొత్తాన్ని నమోదు చేయండి.':'Please enter a valid amount.');return}const category=document.getElementById('expenseCategory').value;data.expenses.push({id:Date.now(),category,amount,date:document.getElementById('expenseDate').value||today(),note:document.getElementById('expenseNote').value.trim()});document.getElementById('expenseAmount').value='';document.getElementById('expenseNote').value='';save()}
 function removeExpense(id){data.expenses=data.expenses.filter(x=>x.id!==id);save()}
+function totalExpenses(){return data.expenses.reduce((s,x)=>s+Number(x.amount||0),0)}
+function addProfitPreview(){const revenue=Number(document.getElementById('yieldQ').value||0)*Number(document.getElementById('priceQ').value||0);const expenses=Number(document.getElementById('profitExpenseAmount').value||0);document.getElementById('revenue').textContent=money(revenue);document.getElementById('profitExpenses').textContent=money(expenses);document.getElementById('profitValue').textContent=money(revenue-expenses)}
+function recordProfit(){const yieldQ=Number(document.getElementById('yieldQ').value||0),priceQ=Number(document.getElementById('priceQ').value||0),expenses=Number(document.getElementById('profitExpenseAmount').value||0);if(yieldQ<=0||priceQ<0){alert(lang==='te'?'దిగుబడి మరియు అమ్మక ధర నమోదు చేయండి.':'Enter yield and selling price.');return}const revenue=yieldQ*priceQ;data.profits.push({id:Date.now(),date:document.getElementById('profitDate').value||today(),yieldQ,priceQ,expenses,revenue,profit:revenue-expenses});document.getElementById('yieldQ').value='';document.getElementById('priceQ').value='';document.getElementById('profitExpenseAmount').value='';addProfitPreview();save()}
+function removeProfit(id){data.profits=data.profits.filter(x=>x.id!==id);save()}
+async function requestNotifications(){if(!('Notification' in window)){alert(lang==='te'?'ఈ బ్రౌజర్ నోటిఫికేషన్లను మద్దతు ఇవ్వదు.':'This browser does not support notifications.');return}const p=await Notification.requestPermission();document.getElementById('notificationStatus').textContent=p==='granted'?(lang==='te'?'నోటిఫికేషన్లు అనుమతించబడ్డాయి.':'Notifications enabled.'):(lang==='te'?'నోటిఫికేషన్లు అనుమతించబడలేదు.':'Notifications are not enabled.')}
+function addReminder(){const text=document.getElementById('reminderText').value.trim(),date=document.getElementById('reminderDate').value,time=document.getElementById('reminderTime').value;if(!text||!date||!time){alert(lang==='te'?'రిమైండర్, తేదీ మరియు సమయం నమోదు చేయండి.':'Enter reminder, date and time.');return}data.reminders.push({id:Date.now(),text,date,time,done:false});document.getElementById('reminderText').value='';save();requestNotifications()}
 function removeReminder(id){data.reminders=data.reminders.filter(x=>x.id!==id);save()}
-function totalExpenses(){return data.expenses.reduce((s,x)=>s+x.amount,0)}
-function calculateProfit(){
-  const revenue=Number(document.getElementById('yieldQ').value||0)*Number(document.getElementById('priceQ').value||0);
-  const expenses=totalExpenses();
-  document.getElementById('revenue').textContent=money(revenue);
-  document.getElementById('profitExpenses').textContent=money(expenses);
-  document.getElementById('profitValue').textContent=money(revenue-expenses);
-}
-function updateUI(){
-  document.getElementById('dashCrop').textContent=data.farm.crop||'Not added';
-  document.getElementById('dashArea').textContent=(data.farm.area||0)+' acres';
-  document.getElementById('dashExpenses').textContent=money(totalExpenses());
-
-  const yieldQ=Number(document.getElementById('yieldQ')?.value||0);
-  const priceQ=Number(document.getElementById('priceQ')?.value||0);
-  document.getElementById('dashProfit').textContent=money(yieldQ*priceQ-totalExpenses());
-
-  const f=data.farm;
-  if(document.activeElement?.id!=='farmerName')document.getElementById('farmerName').value=f.farmerName||'';
-  document.getElementById('location').value=f.location||'';
-  document.getElementById('crop').value=f.crop||'';
-  document.getElementById('area').value=f.area||'';
-  document.getElementById('sowingDate').value=f.sowingDate||'';
-
-  const list=document.getElementById('expenseList');
-  list.innerHTML=data.expenses.length?data.expenses.map(x=>`<div class="expense-row"><div><strong>${escapeHtml(x.category)}</strong><br><small>${escapeHtml(x.date)}${x.note?' · '+escapeHtml(x.note):''}</small></div><div><strong>${money(x.amount)}</strong><br><button onclick="removeExpense(${x.id})">Delete</button></div></div>`).join(''):'<p class="muted">No expenses added yet.</p>';
-  document.getElementById('expenseTotal').textContent=money(totalExpenses());
-
-  const rl=document.getElementById('reminderList');
-  rl.innerHTML=data.reminders.length?data.reminders.sort((a,b)=>a.date.localeCompare(b.date)).map(x=>`<div class="reminder-row"><div><strong>${escapeHtml(x.text)}</strong><br><small>${escapeHtml(x.date)}</small></div><button onclick="removeReminder(${x.id})">Done</button></div>`).join(''):'<p class="muted">No reminders yet.</p>';
-}
+function scheduleReminders(){clearInterval(reminderTimer);reminderTimer=setInterval(checkReminders,15000);checkReminders()}
+function checkReminders(){const now=new Date();const stamp=now.toISOString().slice(0,10);const hm=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');data.reminders.forEach(r=>{if(!r.done&&r.date===stamp&&r.time===hm){r.done=true;localStorage.setItem(KEY,JSON.stringify(data));if('Notification' in window&&Notification.permission==='granted')new Notification('RythuMitra 🔔',{body:r.text});else alert('RythuMitra 🔔\n'+r.text)}});updateUI()}
+function updateUI(){document.getElementById('dashCrop').textContent=data.farm.crop||'Not added';document.getElementById('dashArea').textContent=(data.farm.area||0)+' acres';document.getElementById('dashExpenses').textContent=money(totalExpenses());const totalProfit=data.profits.reduce((s,x)=>s+Number(x.profit||0),0);document.getElementById('dashProfit').textContent=money(totalProfit);const f=data.farm;document.getElementById('farmerName').value=f.farmerName||'';document.getElementById('location').value=f.location||'';document.getElementById('crop').value=f.crop||'';document.getElementById('area').value=f.area||'';document.getElementById('sowingDate').value=f.sowingDate||'';document.getElementById('expenseTotal').textContent=money(totalExpenses());
+const list=document.getElementById('expenseList');const expenses=[...data.expenses].sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);list.innerHTML=expenses.length?expenses.map(x=>`<div class="expense-row"><div><strong>${escapeHtml(lang==='te'?(catTe[x.category]||x.category):x.category)}</strong><br><small>${escapeHtml(x.date)}${x.note?' · '+escapeHtml(x.note):''}</small></div><div class="row-right"><strong>${money(x.amount)}</strong><button onclick="removeExpense(${x.id})">${lang==='te'?'తొలగించు':'Delete'}</button></div></div>`).join(''):'<p class="muted">'+(lang==='te'?'ఇంకా ఖర్చులు లేవు.':'No expenses added yet.')+'</p>';
+const profitList=document.getElementById('profitList');const profits=[...data.profits].sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);profitList.innerHTML=profits.length?profits.map(x=>`<div class="profit-row"><div><strong>${escapeHtml(x.date)}</strong><br><small>${lang==='te'?'దిగుబడి':'Yield'}: ${x.yieldQ} Q · ${lang==='te'?'అమ్మక ధర':'Price'}: ${money(x.priceQ)}/Q<br>${lang==='te'?'ఆదాయం':'Revenue'}: ${money(x.revenue)} · ${lang==='te'?'ఖర్చు':'Expenses'}: ${money(x.expenses)}</small></div><div class="row-right"><strong>${money(x.profit)}</strong><button onclick="removeProfit(${x.id})">${lang==='te'?'తొలగించు':'Delete'}</button></div></div>`).join(''):'<p class="muted">'+(lang==='te'?'ఇంకా లాభాల నమోదు లేదు.':'No profit records yet.')+'</p>';
+document.getElementById('profitTotal').textContent=money(totalProfit);
+const rl=document.getElementById('reminderList');const rem=[...data.reminders].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));rl.innerHTML=rem.length?rem.map(x=>`<div class="reminder-row"><div><strong>${escapeHtml(x.text)}</strong><br><small>${escapeHtml(x.date)} · ${escapeHtml(x.time)} ${x.done?' · '+(lang==='te'?'పూర్తయింది':'Done'):''}</small></div><button onclick="removeReminder(${x.id})">${lang==='te'?'తొలగించు':'Delete'}</button></div>`).join(''):'<p class="muted">'+(lang==='te'?'ఇంకా రిమైండర్లు లేవు.':'No reminders yet.')+'</p>';
+applyLanguage()}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-document.getElementById('expenseDate').value=new Date().toISOString().slice(0,10);
-updateUI();
+document.getElementById('expenseDate').value=today();document.getElementById('profitDate').value=today();document.getElementById('reminderDate').value=today();
+document.getElementById('yieldQ').addEventListener('input',addProfitPreview);document.getElementById('priceQ').addEventListener('input',addProfitPreview);document.getElementById('profitExpenseAmount').addEventListener('input',addProfitPreview);
+applyLanguage();updateUI();scheduleReminders();
