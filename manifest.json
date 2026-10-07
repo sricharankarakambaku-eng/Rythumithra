@@ -1,0 +1,10 @@
+{
+  "name": "RythuMitra",
+  "short_name": "RythuMitra",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f4f7f3",
+  "theme_color": "#2f7d32",
+  "description": "A simple farm management and profit calculator for farmers.",
+  "icons": []
+}

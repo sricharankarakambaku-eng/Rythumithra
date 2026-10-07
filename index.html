@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#2f7d32">
+  <link rel="manifest" href="manifest.json">
+  <title>RythuMitra</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="brand">🌱 RythuMitra</div>
+      <div class="tagline">Your Farm. Your Data. Your Better Decision.</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="dashboard" class="screen active">
+      <div class="hero">
+        <h1>Good day, Farmer 👋</h1>
+        <p>Manage your farm and understand your costs and estimated profit.</p>
+      </div>
+      <div class="grid">
+        <div class="card stat"><span>🌾 Crop</span><strong id="dashCrop">Not added</strong></div>
+        <div class="card stat"><span>📐 Area</span><strong id="dashArea">0 acres</strong></div>
+        <div class="card stat"><span>💰 Expenses</span><strong id="dashExpenses">₹0</strong></div>
+        <div class="card stat"><span>📈 Est. Profit</span><strong id="dashProfit">₹0</strong></div>
+      </div>
+      <div class="card">
+        <h2>Quick actions</h2>
+        <div class="actions">
+          <button onclick="showScreen('farm')">🌾 Add / Edit Farm</button>
+          <button onclick="showScreen('expenses')">➕ Add Expense</button>
+          <button onclick="showScreen('profit')">📊 Calculate Profit</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="farm" class="screen">
+      <div class="card">
+        <h2>🌾 My Farm</h2>
+        <label>Farmer name<input id="farmerName" placeholder="Your name"></label>
+        <label>Village / location<input id="location" placeholder="Village, District"></label>
+        <label>Crop<input id="crop" placeholder="e.g. Paddy"></label>
+        <label>Land area (acres)<input id="area" type="number" min="0" step="0.01" placeholder="e.g. 3"></label>
+        <label>Sowing date<input id="sowingDate" type="date"></label>
+        <button class="primary" onclick="saveFarm()">Save Farm</button>
+        <p id="farmSaved" class="success"></p>
+      </div>
+    </section>
+
+    <section id="expenses" class="screen">
+      <div class="card">
+        <h2>💰 Expenses</h2>
+        <label>Category
+          <select id="expenseCategory">
+            <option>Seeds</option><option>Fertilizer</option><option>Labour</option>
+            <option>Irrigation</option><option>Machinery</option><option>Crop protection</option><option>Other</option>
+          </select>
+        </label>
+        <label>Amount (₹)<input id="expenseAmount" type="number" min="0" step="0.01" placeholder="0"></label>
+        <label>Date<input id="expenseDate" type="date"></label>
+        <label>Note<input id="expenseNote" placeholder="Optional"></label>
+        <button class="primary" onclick="addExpense()">Add Expense</button>
+      </div>
+      <div class="card">
+        <h2>Expense history</h2>
+        <div id="expenseList"></div>
+        <div class="total">Total: <strong id="expenseTotal">₹0</strong></div>
+      </div>
+    </section>
+
+    <section id="profit" class="screen">
+      <div class="card">
+        <h2>📊 Profit Calculator</h2>
+        <label>Expected yield (quintals)<input id="yieldQ" type="number" min="0" step="0.01" placeholder="e.g. 60"></label>
+        <label>Expected selling price / quintal (₹)<input id="priceQ" type="number" min="0" step="0.01" placeholder="e.g. 2000"></label>
+        <button class="primary" onclick="calculateProfit()">Calculate</button>
+      </div>
+      <div class="grid">
+        <div class="card result"><span>Expected Revenue</span><strong id="revenue">₹0</strong></div>
+        <div class="card result"><span>Total Expenses</span><strong id="profitExpenses">₹0</strong></div>
+        <div class="card result"><span>Estimated Profit</span><strong id="profitValue">₹0</strong></div>
+      </div>
+    </section>
+
+    <section id="reminders" class="screen">
+      <div class="card">
+        <h2>🔔 Reminders</h2>
+        <label>Reminder<input id="reminderText" placeholder="e.g. Irrigation"></label>
+        <label>Date<input id="reminderDate" type="date"></label>
+        <button class="primary" onclick="addReminder()">Add Reminder</button>
+      </div>
+      <div class="card"><div id="reminderList"></div></div>
+    </section>
+
+    <section id="profile" class="screen">
+      <div class="card">
+        <h2>👤 Profile</h2>
+        <p>RythuMitra MVP</p>
+        <p class="muted">This first version stores data locally on this device. A secure cloud database will be added in the next stage.</p>
+      </div>
+    </section>
+  </main>
+
+  <nav class="nav">
+    <button onclick="showScreen('dashboard')">🏠<span>Home</span></button>
+    <button onclick="showScreen('farm')">🌾<span>Farm</span></button>
+    <button onclick="showScreen('expenses')">💰<span>Expenses</span></button>
+    <button onclick="showScreen('profit')">📊<span>Profit</span></button>
+    <button onclick="showScreen('reminders')">🔔<span>Reminders</span></button>
+    <button onclick="showScreen('profile')">👤<span>Profile</span></button>
+  </nav>
+  <script src="app.js"></script>
+</body>
+</html>
