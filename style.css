@@ -39,3 +39,33 @@
 .dashboard-back:active{transform:scale(.99);background:#edf7ee}
 .dashboard-back strong{font-weight:900}
 @media(max-width:430px){.dashboard-back{font-size:15px;padding:12px 14px}}
+
+/* V10.2 UI polish: mobile-first, accessible, safer touch targets, and smoother rendering */
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{min-height:100vh;overscroll-behavior-y:none}
+button,input,select,textarea{touch-action:manipulation}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #9bd3a0;outline-offset:2px}
+input,select,textarea{min-height:46px;border:1.5px solid #cfdacf}
+textarea{resize:vertical;line-height:1.45}
+button{min-height:44px}
+.topbar{padding-top:max(12px,env(safe-area-inset-top));padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+.container{padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right));padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+.nav{padding-bottom:env(safe-area-inset-bottom);scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav button{min-height:58px}
+.card{box-shadow:0 3px 12px rgba(20,60,25,.06)}
+.dashboard-back{position:sticky;top:72px;z-index:4;background:#fff;box-shadow:0 3px 12px rgba(20,60,25,.08)}
+.v10-menu-card{min-height:66px}
+.v10-card-text strong{letter-spacing:.1px}
+.v10-welcome{background:linear-gradient(180deg,#ffffff,#f7fbf7)}
+.account-banner{min-height:56px}
+.file-btn{min-height:44px}
+@media(max-width:430px){
+  .dashboard-back{top:62px}
+  .topbar{min-height:64px}
+  .v10-welcome{padding:18px 15px}
+  .v10-menu-card{min-height:64px}
+  .v10-card-text strong{font-size:17px}
+  .nav button{min-width:70px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.v10-menu-card,.dashboard-back{transition:none}}
