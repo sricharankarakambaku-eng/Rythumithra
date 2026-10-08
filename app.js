@@ -173,3 +173,18 @@ const _showScreen=showScreen;showScreen=function(id){_showScreen(id);if(id==='we
  window.addEventListener('online',hideOfflineBar);
  if(!navigator.onLine)showOfflineBar();
 })();
+
+/* V10.5 scroll recovery: keep the app on the browser's native vertical scroll surface. */
+(function(){
+  function unlockVerticalScroll(){
+    try{
+      document.documentElement.style.overflowY='auto';
+      document.body.style.overflowY='auto';
+      document.body.style.height='auto';
+      document.body.style.position='relative';
+    }catch(e){}
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',unlockVerticalScroll,{once:true});
+  else unlockVerticalScroll();
+  window.addEventListener('pageshow',unlockVerticalScroll);
+})();

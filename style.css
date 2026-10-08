@@ -94,3 +94,53 @@ label{line-height:1.4}
   .actions button{width:100%}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* V10.5: mobile scrolling recovery and touch stability */
+html{
+  width:100%;
+  min-height:100%;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  -webkit-overflow-scrolling:touch;
+}
+body{
+  width:100%;
+  min-height:100vh;
+  height:auto !important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  position:relative;
+  touch-action:pan-y;
+  -webkit-overflow-scrolling:touch;
+}
+main.container{
+  min-height:calc(100vh - 70px);
+  height:auto !important;
+  overflow:visible !important;
+}
+.screen{
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow:visible !important;
+  contain:none;
+}
+.screen.active{
+  height:auto !important;
+  overflow:visible !important;
+}
+.v10-shell{
+  height:auto !important;
+  min-height:0 !important;
+  overflow:visible !important;
+}
+.nav{
+  touch-action:pan-x;
+}
+.weather-map{
+  touch-action:auto;
+}
+@media(max-width:650px){
+  html,body{overflow-y:auto !important;}
+  .container{padding-bottom:calc(96px + env(safe-area-inset-bottom));}
+}
