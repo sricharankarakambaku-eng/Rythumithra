@@ -172,3 +172,37 @@ main.container{
   body{position:fixed!important;}
   main.container{overflow-y:auto!important;overflow-x:hidden!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;}
 }
+
+/* V10.8 FINAL: use the browser document itself as the only mobile scroll surface. */
+html, body {
+  width: 100% !important;
+  min-height: 100% !important;
+  height: auto !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  position: static !important;
+  touch-action: pan-y !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+main.container {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  touch-action: pan-y !important;
+}
+.screen, .screen.active {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  content-visibility: visible !important;
+  contain: none !important;
+}
+/* Keep navigation visible, but never make it the scroll container. */
+.nav { position: fixed !important; bottom: 0 !important; }
+/* Manual controls */
+#rmManualScroll { position: fixed; right: 8px; bottom: 82px; z-index: 99999; display:flex; flex-direction:column; gap:7px; align-items:center; }
+#rmManualScroll button { width:46px; height:46px; min-width:46px; padding:0; border-radius:14px; background:#2f7d32 !important; color:#fff !important; font-size:22px; font-weight:900; box-shadow:0 3px 10px rgba(0,0,0,.25); touch-action:manipulation !important; }
+#rmManualScroll .rm-progress { width:46px; text-align:center; font-size:10px; font-weight:900; background:rgba(255,255,255,.92); color:#205a25; border-radius:8px; padding:4px 2px; }

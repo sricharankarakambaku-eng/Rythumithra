@@ -188,27 +188,4 @@ const _showScreen=showScreen;showScreen=function(id){_showScreen(id);if(id==='we
   else unlockVerticalScroll();
   window.addEventListener('pageshow',unlockVerticalScroll);
 })();
-
-
-/* V10.6: ensure the mobile app uses one reliable native vertical scroll surface. */
-(function(){
-  function setupScrollHost(){
-    try{
-      const host=document.querySelector('main.container');
-      if(!host)return;
-      if(window.innerWidth<=649){
-        host.style.overflowY='auto';
-        host.style.overflowX='hidden';
-        host.style.touchAction='pan-y';
-        host.style.webkitOverflowScrolling='touch';
-      }else{
-        host.style.overflowY='visible';
-        host.style.overflowX='visible';
-      }
-    }catch(e){}
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setupScrollHost,{once:true});
-  else setupScrollHost();
-  window.addEventListener('resize',setupScrollHost);
-  window.addEventListener('orientationchange',()=>setTimeout(setupScrollHost,150));
-})();
+/* V10.8: browser document is the single scroll surface; manual controls are in scrollfix.js. */

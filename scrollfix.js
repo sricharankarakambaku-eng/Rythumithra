@@ -1,43 +1,28 @@
-(function(){
+(function () {
   'use strict';
-  function host(){return document.querySelector('main.container') || document.scrollingElement || document.documentElement;}
-  function sync(){
-    const h=host(), rail=document.getElementById('rmScrollRail'), thumb=document.getElementById('rmScrollThumb');
-    if(!h||!rail||!thumb)return;
-    const max=Math.max(0,h.scrollHeight-h.clientHeight);
-    if(max<=2){rail.classList.add('hidden');return;}
-    rail.classList.remove('hidden');
-    const track=rail.clientHeight-76;
-    const ratio=h.clientHeight/h.scrollHeight;
-    const th=Math.max(42,Math.min(track,track*ratio));
-    thumb.style.height=th+'px';
-    const y=max?((h.scrollTop/max)*(track-th)):0;
-    thumb.style.transform='translateY('+y+'px)';
+  function doc() { return document.scrollingElement || document.documentElement || document.body; }
+  function maxScroll() { var d=doc(); return Math.max(0, d.scrollHeight - window.innerHeight); }
+  function scrollPage(dir) {
+    var amount=Math.max(220, Math.floor(window.innerHeight * 0.72));
+    window.scrollBy({top: dir*amount, left:0, behavior:'smooth'});
   }
-  function scrollByPage(dir){
-    const h=host(); if(!h)return;
-    h.scrollBy({top:dir*Math.max(180,h.clientHeight*0.72),behavior:'smooth'});
+  function sync() {
+    var max=maxScroll(), box=document.getElementById('rmManualScroll'), p=document.getElementById('rmProgress');
+    if(!box) return;
+    box.style.display = max > 8 ? 'flex' : 'none';
+    if(p) p.textContent = max>0 ? Math.round((doc().scrollTop/max)*100)+'%' : '0%';
   }
-  function setup(){
-    if(document.getElementById('rmScrollRail'))return;
-    const rail=document.createElement('div');
-    rail.id='rmScrollRail'; rail.className='rm-scroll-rail hidden';
-    rail.innerHTML='<button class="rm-scroll-btn rm-up" aria-label="Scroll up">▲</button><div class="rm-scroll-track"><div id="rmScrollThumb" class="rm-scroll-thumb"></div></div><button class="rm-scroll-btn rm-down" aria-label="Scroll down">▼</button>';
-    document.body.appendChild(rail);
-    rail.querySelector('.rm-up').addEventListener('click',()=>scrollByPage(-1));
-    rail.querySelector('.rm-down').addEventListener('click',()=>scrollByPage(1));
-    const track=rail.querySelector('.rm-scroll-track');
-    track.addEventListener('click',e=>{if(e.target.id==='rmScrollThumb')return;const r=track.getBoundingClientRect();const h=host();const max=Math.max(0,h.scrollHeight-h.clientHeight);h.scrollTo({top:Math.max(0,Math.min(max,((e.clientY-r.top)/r.height)*max)),behavior:'smooth'});});
-    let dragging=false,startY=0,startScroll=0;
-    const thumb=rail.querySelector('#rmScrollThumb');
-    const down=e=>{dragging=true;startY=e.clientY;startScroll=host().scrollTop;thumb.setPointerCapture?.(e.pointerId);e.preventDefault();};
-    const move=e=>{if(!dragging)return;const h=host();const trackH=track.clientHeight;const thumbH=thumb.offsetHeight;const max=Math.max(0,h.scrollHeight-h.clientHeight);const travel=Math.max(1,trackH-thumbH);h.scrollTop=startScroll+(e.clientY-startY)*max/travel;e.preventDefault();};
-    const up=()=>{dragging=false;};
-    thumb.addEventListener('pointerdown',down); thumb.addEventListener('pointermove',move); thumb.addEventListener('pointerup',up); thumb.addEventListener('pointercancel',up);
-    const h=host(); h.addEventListener('scroll',sync,{passive:true});
-    window.addEventListener('resize',sync); window.addEventListener('orientationchange',()=>setTimeout(sync,150));
-    new MutationObserver(()=>setTimeout(sync,50)).observe(h,{subtree:true,childList:true,attributes:true});
-    setTimeout(sync,250); setTimeout(sync,800);
+  function setup() {
+    if(document.getElementById('rmManualScroll')) return;
+    var box=document.createElement('div'); box.id='rmManualScroll';
+    box.innerHTML='<button type="button" id="rmUp" aria-label="Scroll up">▲</button><div class="rm-progress" id="rmProgress">0%</div><button type="button" id="rmDown" aria-label="Scroll down">▼</button>';
+    document.body.appendChild(box);
+    document.getElementById('rmUp').addEventListener('click',function(){scrollPage(-1);});
+    document.getElementById('rmDown').addEventListener('click',function(){scrollPage(1);});
+    window.addEventListener('scroll',sync,{passive:true});
+    window.addEventListener('resize',sync);
+    new MutationObserver(function(){setTimeout(sync,100);}).observe(document.body,{childList:true,subtree:true});
+    setTimeout(sync,300); setTimeout(sync,1200);
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',setup); else setup();
 })();
