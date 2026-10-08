@@ -1,10 +1,10 @@
 {
-  "name": "RythuMitra",
+  "name": "RythuMitra V10.4",
   "short_name": "RythuMitra",
-  "start_url": ".",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#f4f7f3",
   "theme_color": "#2f7d32",
-  "description": "Bilingual farmer accounts, farm management, marketplace, weather, government schemes and buyer communication.",
+  "description": "RythuMitra V10.4 — bilingual farmer management, marketplace, weather, schemes and farm tools.",
   "icons": []
 }

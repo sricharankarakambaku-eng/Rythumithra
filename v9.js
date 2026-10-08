@@ -1,8 +1,9 @@
 /* RythuMitra V9 account, buyer, cloud-ready marketplace and admin layer. */
 const V9_KEY='rythumitra_v9';
-let v9=JSON.parse(localStorage.getItem(V9_KEY)||'null')||{user:null,role:'farmer',buyers:[],enquiries:[],messages:[],notifications:[],ratings:[],reports:[],announcements:[],cloudBackup:null,session:false};
+function v9readStorage(key){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):null}catch(e){console.warn('RythuMitra V9 storage read failed',e);return null}}
+let v9=v9readStorage(V9_KEY)||{user:null,role:'farmer',buyers:[],enquiries:[],messages:[],notifications:[],ratings:[],reports:[],announcements:[],cloudBackup:null,session:false};
 v9.buyers=v9.buyers||[];v9.enquiries=v9.enquiries||[];v9.messages=v9.messages||[];v9.notifications=v9.notifications||[];v9.ratings=v9.ratings||[];v9.reports=v9.reports||[];v9.announcements=v9.announcements||[];
-function v9save(){localStorage.setItem(V9_KEY,JSON.stringify(v9));}
+function v9save(){try{localStorage.setItem(V9_KEY,JSON.stringify(v9))}catch(e){console.error('RythuMitra V9 save failed',e);v9toast(v9t('Data could not be saved. Check device storage.','డేటా సేవ్ కాలేదు. నిల్వ స్థలాన్ని తనిఖీ చేయండి.'))}}
 function v9esc(s){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
 function v9t(en,te){return lang==='te'?te:en;}
 function v9toast(msg){const el=document.getElementById('v9Toast');if(el){el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2600);}}

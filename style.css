@@ -75,3 +75,22 @@ button{min-height:44px}
 .offline-bar[hidden]{display:none}
 .screen{content-visibility:auto;contain-intrinsic-size:1px 700px}
 img{max-width:100%;height:auto}
+
+/* V10.4 final deployment polish */
+html,body{max-width:100%;overflow-x:hidden}
+body{overflow-wrap:anywhere}
+img,svg,video,canvas{max-width:100%}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.55}
+.card,.v10-menu-card,.dashboard-back{overflow-wrap:anywhere}
+label{line-height:1.4}
+.error-text{color:#a32626;font-weight:800}
+.success-text{color:#1f6b2a;font-weight:800}
+@media(max-width:520px){
+  .container{width:100%;box-sizing:border-box}
+  .card{border-radius:16px}
+  .actions{gap:9px}
+  .actions button{width:100%}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
