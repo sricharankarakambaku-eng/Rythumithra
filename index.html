@@ -1,144 +1,23 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#2f7d32">
-  <link rel="manifest" href="manifest.json">
-  <title>RythuMitra</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <header class="topbar">
-    <div>
-      <div class="brand">🌱 RythuMitra</div>
-      <div class="tagline" data-i18n="tagline">Your Farm. Your Data. Your Better Decision.</div>
-    </div>
-    <button class="lang" onclick="toggleLanguage()" id="langBtn">తెలుగు</button>
-  </header>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#2f7d32"><link rel="manifest" href="manifest.json"><title>RythuMitra V5</title><link rel="stylesheet" href="style.css"></head><body>
+<header class="topbar"><div><div class="brand">🌱 RythuMitra</div><div class="tagline" data-i18n="tagline">Your Farm. Your Data. Your Better Decision.</div></div><button class="lang" onclick="toggleLanguage()" id="langBtn">తెలుగు</button></header>
+<main class="container">
+<section id="dashboard" class="screen active"><div class="hero"><h1 data-i18n="greeting">Good day, Farmer 👋</h1><p data-i18n="dashboardIntro">Manage crops, accounts, sales, expenses and profit in one place.</p></div><div class="grid"><div class="card stat"><span>🌾 <span data-i18n="crop">Crops</span></span><strong id="dashCrop">0 crops</strong></div><div class="card stat"><span>📐 <span data-i18n="area">Total Area</span></span><strong id="dashArea">0 acres</strong></div><div class="card stat expense-stat"><span>💸 <span data-i18n="totalExpenses">Total Expenses</span></span><strong id="dashExpenses">₹0</strong></div><div class="card stat"><span>💰 <span data-i18n="totalSales">Total Sales</span></span><strong id="dashSales">₹0</strong></div><div class="card stat profit-stat"><span>📈 <span data-i18n="totalProfit">Total Profit</span></span><strong id="dashProfit">₹0</strong></div></div>
+<div class="card"><h2 data-i18n="farmAccounts">📒 Farm Accounts & Reports</h2><p class="muted" data-i18n="accountsIntro">Every expense and sale is linked to a crop. Profit is calculated automatically.</p><div class="actions"><button onclick="showScreen('expenses')">➕ <span data-i18n="addExpenseBtn">Add Crop Expense</span></button><button onclick="showScreen('sales')">💰 <span data-i18n="addSaleBtn">Add Crop Sale</span></button><button onclick="showScreen('reports')">📊 <span data-i18n="reportsBtn">View Reports</span></button></div></div>
+<div class="card"><div class="section-title"><h2 data-i18n="myCrops">🌾 My Crops</h2><button onclick="showScreen('crops')" data-i18n="viewAll">View all</button></div><div id="dashboardCrops"></div></div></section>
 
-  <main class="container">
-    <section id="dashboard" class="screen active">
-      <div class="hero">
-        <h1 data-i18n="greeting">Good day, Farmer 👋</h1>
-        <p data-i18n="dashboardIntro">Manage your farm, crops, daily costs and profit separately.</p>
-      </div>
-      <div class="grid">
-        <div class="card stat"><span data-i18n="crop">🌾 Crops</span><strong id="dashCrop">0 crops</strong></div>
-        <div class="card stat"><span data-i18n="area">📐 Total Area</span><strong id="dashArea">0 acres</strong></div>
-        <div class="card stat expense-stat"><span data-i18n="totalExpenses">💰 Total Expenses</span><strong id="dashExpenses">₹0</strong></div>
-        <div class="card stat profit-stat"><span data-i18n="totalProfit">📈 Total Profit</span><strong id="dashProfit">₹0</strong></div>
-      </div>
-      <div class="card">
-        <h2 data-i18n="quickActions">Quick actions</h2>
-        <div class="actions">
-          <button onclick="showScreen('crops')">🌾 <span data-i18n="cropBtn">Manage Crops</span></button>
-          <button onclick="showScreen('expenses')">➕ <span data-i18n="addExpenseBtn">Add Daily Expense</span></button>
-          <button onclick="showScreen('profit')">📊 <span data-i18n="recordProfitBtn">Record Profit</span></button>
-        </div>
-      </div>
-      <div class="card" id="dashboardCropsCard">
-        <div class="section-title"><h2 data-i18n="myCrops">🌾 My Crops</h2><button onclick="showScreen('crops')" data-i18n="viewAll">View all</button></div>
-        <div id="dashboardCrops"></div>
-      </div>
-    </section>
+<section id="crops" class="screen"><div class="card"><h2 data-i18n="cropManagement">🌱 Crop Management</h2><p class="muted" data-i18n="cropHint">Add each crop separately. Quantity is in kilograms and price is ₹/kg.</p><label data-i18n="cropName">Crop name<input id="cropName" placeholder="e.g. Paddy"></label><label data-i18n="cropArea">Land area (acres)<input id="cropArea" type="number" min="0" step="0.01"></label><label data-i18n="cropSowingDate">Sowing date<input id="cropSowingDate" type="date"></label><label data-i18n="cropHarvestDate">Expected harvest date<input id="cropHarvestDate" type="date"></label><label data-i18n="cropStage">Crop stage<select id="cropStage"><option value="growing">Growing</option><option value="ready">Ready</option><option value="harvested">Harvested</option></select></label><label data-i18n="expectedYield">Expected yield (kg)<input id="expectedYield" type="number" min="0" step="0.01"></label><label data-i18n="expectedPrice">Expected price (₹/kg)<input id="expectedPrice" type="number" min="0" step="0.01"></label><div class="preview-box"><span data-i18n="expectedIncome">Expected sales</span><strong id="expectedIncome">₹0</strong></div><button class="primary" onclick="addCrop()" data-i18n="addCrop">Add Crop</button></div><div class="card"><div class="section-title"><h2 data-i18n="cropHistory">My Crops</h2><strong id="cropCount">0</strong></div><div id="cropList"></div></div></section>
 
-    <section id="crops" class="screen">
-      <div class="card">
-        <h2 data-i18n="cropManagement">🌱 Crop Management</h2>
-        <p class="muted" data-i18n="cropHint">Add each crop separately. Quantity and selling price use kilograms and ₹/kg.</p>
-        <label data-i18n="cropName">Crop name<input id="cropName" placeholder="e.g. Paddy"></label>
-        <label data-i18n="cropArea">Land area (acres)<input id="cropArea" type="number" min="0" step="0.01" placeholder="e.g. 2"></label>
-        <label data-i18n="cropSowingDate">Sowing date<input id="cropSowingDate" type="date"></label>
-        <label data-i18n="cropHarvestDate">Expected harvest date<input id="cropHarvestDate" type="date"></label>
-        <label data-i18n="cropStage">Crop stage
-          <select id="cropStage"><option value="growing">Growing</option><option value="ready">Ready</option><option value="harvested">Harvested</option></select>
-        </label>
-        <label data-i18n="expectedYield">Expected yield (kg)<input id="expectedYield" type="number" min="0" step="0.01" placeholder="e.g. 2000"></label>
-        <label data-i18n="expectedPrice">Expected price (₹/kg)<input id="expectedPrice" type="number" min="0" step="0.01" placeholder="e.g. 25"></label>
-        <div class="preview-box"><span data-i18n="expectedIncome">Expected income</span><strong id="expectedIncome">₹0</strong></div>
-        <button class="primary" onclick="addCrop()" data-i18n="addCrop">Add Crop</button>
-      </div>
-      <div class="card">
-        <div class="section-title"><h2 data-i18n="cropHistory">My Crops</h2><strong id="cropCount">0</strong></div>
-        <div id="cropList"></div>
-      </div>
-    </section>
+<section id="farm" class="screen"><div class="card"><h2 data-i18n="myFarm">👨‍🌾 Farm Profile</h2><label data-i18n="farmerName">Farmer name<input id="farmerName" placeholder="Your name"></label><label data-i18n="location">Village / location<input id="location" placeholder="Village, District"></label><button class="primary" onclick="saveFarm()" data-i18n="saveFarm">Save Farm Profile</button><p id="farmSaved" class="success"></p></div></section>
 
-    <section id="farm" class="screen">
-      <div class="card">
-        <h2 data-i18n="myFarm">👨‍🌾 Farm Profile</h2>
-        <label data-i18n="farmerName">Farmer name<input id="farmerName" placeholder="Your name"></label>
-        <label data-i18n="location">Village / location<input id="location" placeholder="Village, District"></label>
-        <button class="primary" onclick="saveFarm()" data-i18n="saveFarm">Save Farm Profile</button>
-        <p id="farmSaved" class="success"></p>
-      </div>
-    </section>
+<section id="expenses" class="screen"><div class="card"><h2 data-i18n="cropExpenses">💸 Crop-wise Expenses</h2><p class="muted" data-i18n="expenseHint">Choose a crop and record each expense separately. Expenses remain in their own history.</p><label data-i18n="selectCrop">Crop<select id="expenseCrop"></select></label><label data-i18n="category">Category<select id="expenseCategory"><option value="Seeds">Seeds</option><option value="Fertilizer">Fertilizer</option><option value="Labour">Labour</option><option value="Irrigation">Irrigation</option><option value="Machinery">Machinery</option><option value="Crop protection">Crop protection</option><option value="Transport">Transport</option><option value="Land preparation">Land preparation</option><option value="Other">Other</option></select></label><label data-i18n="amount">Amount (₹)<input id="expenseAmount" type="number" min="0" step="0.01"></label><label data-i18n="date">Date<input id="expenseDate" type="date"></label><label data-i18n="note">Note<input id="expenseNote" placeholder="Optional"></label><button class="primary" onclick="addExpense()" data-i18n="addExpense">Add Expense</button></div><div class="card"><div class="section-title"><h2 data-i18n="expenseHistory">Expense History</h2><strong id="expenseTotal">₹0</strong></div><div id="expenseList"></div></div></section>
 
-    <section id="expenses" class="screen">
-      <div class="card">
-        <h2 data-i18n="dailyExpenses">💰 Daily Expenses</h2>
-        <p class="muted" data-i18n="expenseHint">Record each expense separately with its date. Your expense history stays separate from profit history.</p>
-        <label data-i18n="category">Category
-          <select id="expenseCategory"><option value="Seeds">Seeds</option><option value="Fertilizer">Fertilizer</option><option value="Labour">Labour</option><option value="Irrigation">Irrigation</option><option value="Machinery">Machinery</option><option value="Crop protection">Crop protection</option><option value="Transport">Transport</option><option value="Other">Other</option></select>
-        </label>
-        <label data-i18n="amount">Amount (₹)<input id="expenseAmount" type="number" min="0" step="0.01" placeholder="0"></label>
-        <label data-i18n="date">Date<input id="expenseDate" type="date"></label>
-        <label data-i18n="note">Note<input id="expenseNote" placeholder="Optional"></label>
-        <button class="primary" onclick="addExpense()" data-i18n="addExpense">Add Expense</button>
-      </div>
-      <div class="card"><div class="section-title"><h2 data-i18n="expenseHistory">Expense History</h2><strong id="expenseTotal">₹0</strong></div><div id="expenseList"></div></div>
-    </section>
+<section id="sales" class="screen"><div class="card"><h2 data-i18n="cropSales">💰 Crop-wise Sales</h2><p class="muted" data-i18n="salesHint">Record quantity sold in kg and the actual selling price in ₹/kg.</p><label data-i18n="selectCrop">Crop<select id="saleCrop"></select></label><label data-i18n="quantitySold">Quantity sold (kg)<input id="saleKg" type="number" min="0" step="0.01"></label><label data-i18n="sellingPrice">Selling price (₹/kg)<input id="salePrice" type="number" min="0" step="0.01"></label><label data-i18n="date">Date<input id="saleDate" type="date"></label><label data-i18n="note">Note<input id="saleNote" placeholder="Buyer / market / optional"></label><div class="preview-box"><span data-i18n="saleValue">Sale value</span><strong id="saleValue">₹0</strong></div><button class="primary" onclick="addSale()" data-i18n="addSale">Add Sale</button></div><div class="card"><div class="section-title"><h2 data-i18n="salesHistory">Sales History</h2><strong id="salesTotal">₹0</strong></div><div id="salesList"></div></div></section>
 
-    <section id="profit" class="screen">
-      <div class="card">
-        <h2 data-i18n="profitCalculator">📊 Profit Calculator</h2>
-        <label data-i18n="profitDate">Profit date<input id="profitDate" type="date"></label>
-        <label data-i18n="yield">Expected / actual yield (kg)<input id="yieldKg" type="number" min="0" step="0.01" placeholder="e.g. 2000"></label>
-        <label data-i18n="price">Selling price / kg (₹)<input id="priceKg" type="number" min="0" step="0.01" placeholder="e.g. 25"></label>
-        <label data-i18n="profitExpensesInput">Expenses for this profit record (₹)<input id="profitExpenseAmount" type="number" min="0" step="0.01" placeholder="Enter expenses for this calculation"></label>
-        <p class="muted" data-i18n="profitExpenseHint">This amount is recorded only for this profit entry. It does not change your daily expense history.</p>
-        <button class="primary" onclick="recordProfit()" data-i18n="saveProfit">Calculate & Save Profit</button>
-      </div>
-      <div class="grid">
-        <div class="card result"><span data-i18n="revenue">Expected Revenue</span><strong id="revenue">₹0</strong></div>
-        <div class="card result"><span data-i18n="recordExpenses">Record Expenses</span><strong id="profitExpenses">₹0</strong></div>
-        <div class="card result"><span data-i18n="profit">Profit</span><strong id="profitValue">₹0</strong></div>
-      </div>
-      <div class="card"><div class="section-title"><h2 data-i18n="profitHistory">Profit History</h2><strong id="profitTotal">₹0</strong></div><div id="profitList"></div></div>
-    </section>
+<section id="reports" class="screen"><div class="card"><h2 data-i18n="reports">📊 Farm Accounts Reports</h2><label data-i18n="reportCrop">Crop<select id="reportCrop" onchange="renderReports()"><option value="all">All Crops</option></select></label></div><div class="grid"><div class="card result"><span data-i18n="reportExpenses">Expenses</span><strong id="reportExpenses">₹0</strong></div><div class="card result"><span data-i18n="reportSales">Sales</span><strong id="reportSales">₹0</strong></div><div class="card result"><span data-i18n="reportProfit">Automatic Profit</span><strong id="reportProfit">₹0</strong></div><div class="card result"><span data-i18n="reportMargin">Profit Margin</span><strong id="reportMargin">0%</strong></div></div><div class="card"><h2 data-i18n="cropWiseReport">Crop-wise Profit Report</h2><div id="cropReport"></div></div><div class="card"><h2 data-i18n="expenseBreakdown">Expense Breakdown</h2><div id="expenseBreakdown"></div></div></section>
 
-    <section id="reminders" class="screen">
-      <div class="card">
-        <h2 data-i18n="reminders">🔔 Reminders</h2>
-        <p class="muted" data-i18n="reminderHint">Set a date and time. Allow notifications when your phone asks.</p>
-        <label data-i18n="reminderTextLabel">Reminder<input id="reminderText" placeholder="e.g. Irrigation"></label>
-        <label data-i18n="reminderDateLabel">Date<input id="reminderDate" type="date"></label>
-        <label data-i18n="reminderTimeLabel">Alarm time<input id="reminderTime" type="time"></label>
-        <button class="primary" onclick="addReminder()" data-i18n="addReminder">Add Reminder & Alarm</button>
-        <button class="secondary" onclick="requestNotifications()" data-i18n="allowNotifications">Allow Notifications</button>
-        <p id="notificationStatus" class="muted"></p>
-      </div>
-      <div class="card"><div id="reminderList"></div></div>
-    </section>
+<section id="profit" class="screen"><div class="card"><h2>📈 <span data-i18n="legacyProfit">Previous Profit Records</span></h2><p class="muted" data-i18n="legacyProfitHint">V5 automatic crop profit is calculated from the Accounts module. Older V4 manual profit records are kept separately.</p><div id="profitList"></div></div></section>
 
-    <section id="profile" class="screen">
-      <div class="card">
-        <h2 data-i18n="profile">👤 Profile</h2>
-        <p>RythuMitra</p>
-        <p class="muted" data-i18n="localStorageNote">Your current data is stored on this device. Cloud sync can be added in a later version.</p>
-      </div>
-    </section>
-  </main>
-
-  <nav class="nav">
-    <button onclick="showScreen('dashboard')">🏠<span data-i18n="home">Home</span></button>
-    <button onclick="showScreen('crops')">🌾<span data-i18n="cropsNav">Crops</span></button>
-    <button onclick="showScreen('expenses')">💰<span data-i18n="expensesNav">Expenses</span></button>
-    <button onclick="showScreen('profit')">📊<span data-i18n="profitNav">Profit</span></button>
-    <button onclick="showScreen('reminders')">🔔<span data-i18n="remindersNav">Reminders</span></button>
-    <button onclick="showScreen('profile')">👤<span data-i18n="profileNav">Profile</span></button>
-  </nav>
-  <script src="app.js"></script>
-</body>
-</html>
+<section id="reminders" class="screen"><div class="card"><h2 data-i18n="reminders">🔔 Reminders</h2><p class="muted" data-i18n="reminderHint">Set a date and time. Allow notifications when your phone asks.</p><label data-i18n="reminderTextLabel">Reminder<input id="reminderText" placeholder="e.g. Irrigation"></label><label data-i18n="reminderDateLabel">Date<input id="reminderDate" type="date"></label><label data-i18n="reminderTimeLabel">Alarm time<input id="reminderTime" type="time"></label><button class="primary" onclick="addReminder()" data-i18n="addReminder">Add Reminder & Alarm</button><button class="secondary" onclick="requestNotifications()" data-i18n="allowNotifications">Allow Notifications</button><p id="notificationStatus" class="muted"></p></div><div class="card"><div id="reminderList"></div></div></section>
+<section id="profile" class="screen"><div class="card"><h2 data-i18n="profile">👤 Profile</h2><p>RythuMitra V5</p><p class="muted" data-i18n="localStorageNote">Your current data is stored on this device. Cloud sync can be added later.</p></div></section>
+</main>
+<nav class="nav"><button onclick="showScreen('dashboard')">🏠<span data-i18n="home">Home</span></button><button onclick="showScreen('crops')">🌾<span data-i18n="cropsNav">Crops</span></button><button onclick="showScreen('expenses')">💸<span data-i18n="expensesNav">Expenses</span></button><button onclick="showScreen('sales')">💰<span data-i18n="salesNav">Sales</span></button><button onclick="showScreen('reports')">📊<span data-i18n="reportsNav">Reports</span></button><button onclick="showScreen('reminders')">🔔<span data-i18n="remindersNav">Reminders</span></button></nav><script src="app.js"></script></body></html>
