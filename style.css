@@ -69,3 +69,9 @@ button{min-height:44px}
   .nav button{min-width:70px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.v10-menu-card,.dashboard-back{transition:none}}
+
+/* V10.3 performance + offline polish */
+.offline-bar{position:sticky;top:0;z-index:20;padding:8px 14px;text-align:center;font-size:.88rem;font-weight:700;background:#fff4d6;color:#684f00;border-bottom:1px solid #ead39a}
+.offline-bar[hidden]{display:none}
+.screen{content-visibility:auto;contain-intrinsic-size:1px 700px}
+img{max-width:100%;height:auto}
