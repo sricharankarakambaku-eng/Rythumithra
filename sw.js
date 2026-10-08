@@ -1,4 +1,4 @@
-const CACHE='rythumitra-v10.4-shell-v1';
+const CACHE='rythumitra-v10.6-shell-v1';
 const CORE=['./','./index.html','./style.css','./app.js','./v9.js','./v10.js','./manifest.json'];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));

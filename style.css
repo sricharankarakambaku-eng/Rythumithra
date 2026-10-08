@@ -144,3 +144,17 @@ main.container{
   html,body{overflow-y:auto !important;}
   .container{padding-bottom:calc(96px + env(safe-area-inset-bottom));}
 }
+
+
+/* V10.6: guaranteed mobile scroll host. The browser page itself stays stable while the main app area scrolls. */
+@media(max-width:649px){
+  html{height:100%;overflow:hidden !important;}
+  body{height:100%;min-height:100%;overflow:hidden !important;position:fixed;inset:0;width:100%;}
+  .topbar{position:relative;flex:0 0 auto;}
+  .container{height:calc(100dvh - 64px);height:calc(100vh - 64px);max-height:none;overflow-y:auto !important;overflow-x:hidden !important;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:pan-y;padding-bottom:calc(112px + env(safe-area-inset-bottom));}
+  .nav{position:fixed;bottom:0;left:0;right:0;}
+}
+@media(min-width:650px){
+  html,body{overflow-x:hidden;}
+  .container{overflow:visible;}
+}
