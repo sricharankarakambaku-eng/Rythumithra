@@ -158,3 +158,17 @@ main.container{
   html,body{overflow-x:hidden;}
   .container{overflow:visible;}
 }
+
+/* V10.7: visible manual mobile scrollbar/slider for devices where touch scrolling is unreliable. */
+#rmScrollRail{position:fixed;right:6px;top:82px;bottom:86px;width:34px;z-index:50;display:flex;flex-direction:column;align-items:center;gap:5px;pointer-events:auto;}
+#rmScrollRail.hidden{display:none}
+.rm-scroll-btn{width:34px;height:34px;min-width:34px;padding:0;border-radius:10px;background:rgba(47,125,50,.95)!important;color:#fff!important;font-size:14px;box-shadow:0 2px 7px rgba(0,0,0,.18);touch-action:manipulation;}
+.rm-scroll-track{position:relative;flex:1;width:12px;min-height:80px;border-radius:8px;background:rgba(47,125,50,.16);touch-action:none;}
+.rm-scroll-thumb{position:absolute;left:0;top:0;width:12px;min-height:42px;border-radius:8px;background:#2f7d32;box-shadow:0 1px 5px rgba(0,0,0,.25);touch-action:none;}
+@media(min-width:650px){#rmScrollRail{display:none!important}}
+@media(max-width:649px){
+  /* Keep the actual scroll host enabled; the slider is only a backup control. */
+  html,body{overflow:hidden!important;}
+  body{position:fixed!important;}
+  main.container{overflow-y:auto!important;overflow-x:hidden!important;touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;}
+}
